@@ -5,7 +5,7 @@ module.exports = function(passport) {
     passport.use(new GoogleStrategy({
         clientID : process.env.CLIENT_ID,
         clientSecret : process.env.CLIENT_SECRET,
-        callbackURL : "http://localhost:3000/google/callback"
+        callbackURL : process.env.CALLBACK,
         // remember to change this when you deploy this site
     }, (accessToken, refreshToken, profile, done) => {
         // logging user email
