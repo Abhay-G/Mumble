@@ -475,7 +475,6 @@ textarea.contact-form-text {
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    
 }
 #footer h3 {
     text-align: center;
@@ -917,6 +916,11 @@ input[type="checkbox"][id^="myCheckbox"] {
 }
 #yellowgif {
     width: 250px;
+}
+#empty {
+    width: 100px;
+    margin-top: 3rem;
+    margin-bottom: 1rem;
 }
 
 @media (min-width: 768px) {

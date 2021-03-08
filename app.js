@@ -16,6 +16,9 @@ const flash = require("connect-flash");
 require("./src/passportLocal")(passport);
 require("./src/googleAuth")(passport);
 const multer = require("multer");
+const cloudinary = require("cloudinary");
+const DatauriParser = require("datauri/parser");
+const path = require("path");
 const app = express();
 
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -50,16 +53,9 @@ app.use(function (req, res, next) {
 });
 
 //define storage for images
-const storage = multer.diskStorage({
-    //destination for files
-    destination: function (req, file, cb) {
-        cb(null, "./public/uploads/images");
-    },
-    //add back the extension
-    filename: function (req, file, cb) {
-        cb(null, Date.now() + file.originalname);
-    },
-});
+const storage = multer.memoryStorage();
+
+
 
 //upload parameters for multer
 const upload = multer({
@@ -68,6 +64,16 @@ const upload = multer({
         fileSize: 1024 * 1024 * 5,
     },
 });
+const parser = new DatauriParser();
+
+
+//cloudinary
+cloudinary.config({
+    cloud_name : process.env.CLOUD_NAME,
+    api_key : process.env.API_KEY,
+    api_secret:process.env.API_SECRET
+})
+
 
 //defining sorting criteria for profile page posts
 function compare(a, b) {
@@ -132,17 +138,22 @@ app.get("/compose", (req, res) => {
     }
 });
 
-app.post("/compose", upload.single("image"), (req, res) => {
+app.post("/compose", upload.single("image"), async(req, res) => {
     const title = req.body.title;
     const content = req.body.content;
     const checkedImg = req.body.image;
-    let img = "default.jpg";
+    let img = "/uploads/images/default.jpg";
     if(checkedImg)
     {
-        img = checkedImg;
+        img = "/uploads/images/"+checkedImg;
     }
     if (req.file) {
-        img = req.file.filename;
+        const file = parser.format(
+            path.extname(req.file.originalname).toString(),
+            req.file.buffer
+            ).content;
+        const result = await cloudinary.v2.uploader.upload(file);
+        img = result.secure_url;
     }
     const reactionMap = new Map();
     reactionMap.set("like", 0);
@@ -351,16 +362,6 @@ app.post("/delete/:postId", (req, res) => {
     Post.findOneAndDelete({ _id: postId }, function (err, post) {
         if (err) console.log(err);
         else {
-            if (post.img.charAt(0)>='-0'&&post.img.charAt(0)<='9') {
-                const pathTofile =
-                    __dirname + "/public/uploads/images/" + post.img;
-            
-                fs.unlink(pathTofile, function (err) {
-                    if (err) {
-                        throw err;
-                    }
-                });
-            }
             res.redirect("/profile/" + req.user.id);
         }
     });

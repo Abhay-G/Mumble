@@ -65,7 +65,7 @@ const tl3 = gsap.timeline({
     }
 });
 tl3.from("#reveal",{
-    scale:0,
+    scale:0.5,
     duration:2,
     ease:'Expo.easeInOut',
     opacity:0,
@@ -78,7 +78,7 @@ tl3.from("#reveal",{
     opacity:0,
 },"-=2")
 .from("#story",{
-    scale:0,
+    scale:0.5,
     duration:2,
     delay:0.5,
     ease:'Expo.easeInOut',
@@ -91,7 +91,7 @@ const tl4 = gsap.timeline({
         start:"top center",
         toggleActions:"play pause resume reverse"
     }
-});
+})
 tl4.from(".content h1",{
     duration:1,
     ease:'Expo.easeInOut',

@@ -17,6 +17,10 @@
             <img class="deco deco2" src="/images/hotair.png" alt="" />
             <img class="deco deco3" src="/images/hotair-blue.png" alt="" />
             <img class="deco deco4" src="/images/hotair-orange.png" alt="" />
+            <% if(req.user.posts.length===0){ %> 
+            <img id="empty" src="/images/broke.png" alt="">
+            <p class="lead text-muted p-center">Your profile is empty. Please share something</p>
+            <% } %> 
         </div>
     </div>
 </section>
@@ -29,7 +33,7 @@
             <div class="col">
                 <div class="card shadow-sm mycard">
                     <div class="card-img-container">
-                        <img src="/uploads/images/<%= post.img %>"  class="card-img-top card-img" alt="">
+                        <img src="<%= post.img %>"  class="card-img-top card-img" alt="">
                     </div>
                     <div class="card-body">
                         <h5><%= post.title %></h5>
